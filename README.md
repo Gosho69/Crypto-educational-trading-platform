@@ -1,0 +1,1 @@
+# Crypto-educational-trading-platform
