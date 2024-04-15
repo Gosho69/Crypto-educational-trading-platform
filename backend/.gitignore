@@ -2,3 +2,4 @@
 /home/migrations
 /home/__pycache__
 /global/__pycache__
+/.env
