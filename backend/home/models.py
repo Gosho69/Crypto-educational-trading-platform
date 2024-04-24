@@ -1,3 +1,4 @@
+import uuid
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.utils import timezone
@@ -6,10 +7,10 @@ from django.contrib.auth.models import BaseUserManager
 
 
 class MyUser(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(_("username"), max_length=100, unique=True)
+    username = models.CharField(_("username"), max_length=100, unique=True, default=uuid.uuid1)
     email = models.EmailField(_("email address"), unique=True)
     password = models.CharField(_("password"), max_length=128)
-    credits = models.IntegerField(_("credits"), default=0)
+    credits = models.IntegerField(_("credits"), default=10000)
     created_at = models.DateTimeField(_("created at"), default=timezone.now)
 
 
