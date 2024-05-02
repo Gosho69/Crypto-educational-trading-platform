@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import MyUser
+from .models import MyUser, Crypto
 from django.contrib.auth.hashers import make_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -32,3 +32,13 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
         return data
+    
+class CryptoSerializer(serializers.ModelSerializer):
+    amount = serializers.FloatField(
+        required=True,
+        help_text="Amount of crypto to buy"
+    )
+    class Meta:
+        model = Crypto
+        fields = ['name', 'amount', 'user_id']
+        extra_kwargs = {"user_id": {"read_only": True}}

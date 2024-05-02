@@ -21,3 +21,11 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+class Crypto(models.Model):
+    name = models.CharField(_("name"), max_length=100)
+    amount = models.FloatField(_("amount"))
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name="cryptos")
+
+    def __str__(self):
+        return self.name

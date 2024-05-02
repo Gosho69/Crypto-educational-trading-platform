@@ -2,5 +2,5 @@
 import Form from "../components/FormLogin";
 
 export default function Login() {
-  return <Form route="/token/" />;
+  return <Form route="/login/" />;
 }
