@@ -17,7 +17,7 @@ export default function Form({ route }: { route: string }) {
       const res = await api.post(route, { username, password });
       localStorage.setItem(ACCESS_TOKEN, res.data.access);
       localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-      router.push("/");
+      router.push("/my_profile");
     } catch (error) {
       alert(error);
     } finally {

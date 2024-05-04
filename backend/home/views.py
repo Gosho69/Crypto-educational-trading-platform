@@ -3,7 +3,7 @@ from django.views import View
 from rest_framework import generics
 from .models import MyUser, Crypto
 from .serializer import UserSerializer, CryptoSerializer
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny, AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializer import CustomTokenObtainPairSerializer
 from django.http import JsonResponse
@@ -26,7 +26,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 class DashboardMyProfileView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     def get(self, request, *args, **kwargs):    
         user = request.user
         return JsonResponse({
@@ -36,7 +36,7 @@ class DashboardMyProfileView(APIView):
         })
 
 class DashboardAllCryptoView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     def get(self, request, *args, **kwargs):
         all_data = {}
         for name in cryptonames:
@@ -45,17 +45,17 @@ class DashboardAllCryptoView(APIView):
                 all_data[name] = json_data['data']
             except:
                 return JsonResponse({"error": f"Invalid crypto name: {name}"}, status=400)   
-        formatted_data = [{"crypto": key, **value} for key, value in all_data.items()]
+        formatted_data = {key: value for key, value in all_data.items()}
         return JsonResponse({"data": formatted_data}, status=200)
     
 class DashboardBuyCrypto(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     serializer_class = CryptoSerializer
     def post(self, request, *args, **kwargs):
         user = request.user
         user_id = user.id
         cryptoname = kwargs.get('cryptoname', '').lower()
-        crypto_data = Crypto.objects.filter(name=cryptoname).values_list()
+        crypto_data = Crypto.objects.filter(user_id=user_id, name=cryptoname).values_list()
         for el in list(crypto_data):
             crypto_id = int(el[0])
             amount_db = el[2]
@@ -63,10 +63,10 @@ class DashboardBuyCrypto(APIView):
         price = round(float(data['price']), 2)
         amount = request.data['amount']
         user_credits = user.credits
-        total_price = price * amount
+        total_price = float(price) * float(amount)
         if crypto_data:
             if user_credits >= total_price:
-                amount = amount + amount_db
+                amount = float(amount) + float(amount_db)
                 user.credits = user_credits - total_price
                 user.save()
                 Crypto.objects.filter(id=crypto_id).update(amount=amount)
@@ -83,7 +83,7 @@ class DashboardBuyCrypto(APIView):
                 return JsonResponse({"error": "Not enough credits"}, status=400)
 
 class DashboardMyCryptoView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     serializer_class = CryptoSerializer, UserSerializer
     def get(self, request, *args, **kwargs):
         user = request.user
@@ -97,12 +97,12 @@ class DashboardMyCryptoView(APIView):
             return JsonResponse({"message":"You don't have any crypto yet"}, status=200)
 
 class DashboardSellCrypto(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     serializer_class = CryptoSerializer, UserSerializer
     def post(self, request, *args, **kwargs):
         user = request.user
         user_id = user.id
-        cryptoname = kwargs.get('cryptoname', '').lower()
+        cryptoname = kwargs.get('cryptoname').lower()
         crypto_data = Crypto.objects.filter(name=cryptoname).values_list()
         for el in list(crypto_data):
             crypto_id = int(el[0])
@@ -112,15 +112,15 @@ class DashboardSellCrypto(APIView):
         amount_buy = request.data['amount']
         user_credits = user.credits
         try:
-            if amount_db >= amount_buy:
+            if float(amount_db) >= float(amount_buy):
                 if amount_buy == amount_db:
                     Crypto.objects.filter(id=crypto_id).delete()
                     return JsonResponse({"message": f"Sold {amount_buy} {cryptoname} successfully"}, status=200)
                 if amount_buy == 0:
                     return JsonResponse({"error": "You can't sell 0 crypto"}, status=400)
-                amount = amount_db - amount_buy
+                amount = float(amount_db) - float(amount_buy)
                 Crypto.objects.filter(id=crypto_id).update(amount=abs(amount))
-                user_credits = user_credits + abs(amount_buy) * price
+                user_credits = user_credits + abs(float(amount_buy)) * price
                 user.credits = user_credits
                 user.save()
                 return JsonResponse({"message": f"Sold {amount_buy} {cryptoname} successfully"}, status=200)

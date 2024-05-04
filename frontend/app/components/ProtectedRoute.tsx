@@ -1,3 +1,5 @@
+// ProtectedRoute.tsx
+
 import { redirect } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 import api from "../api";
@@ -9,8 +11,48 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const [isAuthorised, setIsAuthorised] = useState<boolean | null>(null);
 
   useEffect(() => {
-    auth().catch(() => setIsAuthorised(false)); // Perform initial authorization check
+    const auth = async () => {
+      const token = localStorage.getItem(ACCESS_TOKEN);
+      if (!token) {
+        setIsAuthorised(false);
+        return;
+      }
+      try {
+        const decoded: any = jwtDecode(token);
+        if (!decoded || typeof decoded.exp !== "number") {
+          setIsAuthorised(false);
+          return;
+        }
+        const tokenExpiration = decoded.exp;
+        const now = Date.now() / 1000;
+        if (tokenExpiration < now) {
+          await refreshToken();
+        } else {
+          setIsAuthorised(true);
+        }
+      } catch (error) {
+        console.error("Error decoding token:", error);
+        setIsAuthorised(false);
+      }
+    };
+
+    auth();
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
   }, []);
+
+  const handleStorageChange = () => {
+    if (
+      !localStorage.getItem(ACCESS_TOKEN) &&
+      !localStorage.getItem(REFRESH_TOKEN)
+    ) {
+      setIsAuthorised(false);
+    }
+  };
 
   const refreshToken = async () => {
     const refreshToken = localStorage.getItem(REFRESH_TOKEN);
@@ -26,31 +68,6 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
       }
     } catch (e) {
       console.error(e);
-      setIsAuthorised(false);
-    }
-  };
-
-  const auth = async () => {
-    const token = localStorage.getItem(ACCESS_TOKEN);
-    if (!token) {
-      setIsAuthorised(false);
-      return;
-    }
-    try {
-      const decoded: any = jwtDecode(token);
-      if (!decoded || typeof decoded.exp !== "number") {
-        setIsAuthorised(false);
-        return;
-      }
-      const tokenExpiration = decoded.exp;
-      const now = Date.now() / 1000;
-      if (tokenExpiration < now) {
-        await refreshToken();
-      } else {
-        setIsAuthorised(true);
-      }
-    } catch (error) {
-      console.error("Error decoding token:", error);
       setIsAuthorised(false);
     }
   };

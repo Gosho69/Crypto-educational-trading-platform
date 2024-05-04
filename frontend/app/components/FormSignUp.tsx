@@ -19,6 +19,7 @@ export default function Form({ route }: { route: string }) {
     } catch (error) {
       alert(error);
     } finally {
+      localStorage.clear();
       setLoading(false);
     }
   };
