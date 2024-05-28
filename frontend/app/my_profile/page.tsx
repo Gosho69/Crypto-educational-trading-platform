@@ -20,7 +20,7 @@ const MyProfile = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.clear();
-    router.push("/login");
+    router.push("/");
   };
 
   useEffect(() => {
@@ -45,7 +45,7 @@ const MyProfile = () => {
       <div>
         <h1>{data?.username}</h1>
         <p>{data?.email}</p>
-        <p>{data?.credits}</p>
+        <p>Credits: {data?.credits}</p>
         <button onClick={logout}>Log out</button>
       </div>
     </ProtectedRoute>

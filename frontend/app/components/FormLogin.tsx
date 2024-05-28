@@ -8,6 +8,7 @@ export default function Form({ route }: { route: string }) {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -19,7 +20,7 @@ export default function Form({ route }: { route: string }) {
       localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
       router.push("/my_profile");
     } catch (error) {
-      alert(error);
+      setError("Invalid credentials");
     } finally {
       setLoading(false);
     }
@@ -28,25 +29,35 @@ export default function Form({ route }: { route: string }) {
   return loading ? (
     <Loading />
   ) : (
-    <form onSubmit={handleSubmit} className="form-container">
-      <h1>Login</h1>
-      <input
-        className="form-input"
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Username"
-      ></input>
-      <input
-        className="form-input"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-      ></input>
-      <button className="form-button" type="submit">
-        Login
-      </button>
-    </form>
+    <div className="form-wrapper">
+      <form onSubmit={handleSubmit} className="form-container">
+        {error && <div className="alert alert-danger">{error}</div>}
+        <h1 className="label1">Login</h1>
+        <div className="mb-3">
+          <label className="form-label">Username</label>
+          <input
+            type="username"
+            className="form-control"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Enter your username"
+          />
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Password</label>
+          <input
+            type="password"
+            className="form-control"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+          />
+        </div>
+        <a href="/sign_up">Doesn't have an account?Sign Up</a>
+        <button type="submit" className="btn btn-dark w-100">
+          Login
+        </button>
+      </form>
+    </div>
   );
 }
