@@ -32,6 +32,12 @@ body {
   flex-direction: column;
 }
 
+.form-container p {
+  width: 100%;
+  text-align: center;
+  margin: 10px 0;
+}
+
 .form-group {
   width: 100%;
   margin-bottom: 1rem;
@@ -54,3 +60,79 @@ body {
   font-size: 50px;
   font-weight: bold;
 }
+.profile-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+  justify-content: flex-start; /* Align items at the top */
+}
+
+.welcome-text {
+  text-align: center;
+  width: 100%;
+  margin-bottom: 20px; /* Adjust as needed */
+  color: white;
+}
+
+.text-profile{
+  color:white;  
+}
+
+.wrapper {
+    align-items: stretch;
+    display: flex;
+    width: 100%;
+}
+
+.navbar.custom-navbar {
+    background-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.navbar .nav-link {
+    position: relative;
+}
+
+.navbar .nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 50%;
+    background-color: black;
+    transition: width 0.3s ease, left 0.3s ease;
+}
+
+.navbar .nav-link:hover::after {
+    width: 100%;
+    left: 0;
+}
+
+.custom-table {
+  width: 50%;
+  border-collapse: collapse;
+  background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent background */
+}
+
+.custom-table th,
+.custom-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  background-color: transparent; /* Ensure table cells have a transparent background */
+}
+
+.custom-table th {
+  background-color: rgba(255, 255, 255, 0.5); /* Optional: Different transparency for header cells */
+  font-weight: bold;
+  text-align: left;
+}
+
+.custom-table tr:hover {
+  background-color: rgba(255, 255, 255, 0.7); /* Optional: Change transparency on hover */
+}
+
+.label4{
+  color:white;
+}
+

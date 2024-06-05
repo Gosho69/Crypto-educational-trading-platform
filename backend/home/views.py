@@ -90,6 +90,10 @@ class DashboardMyCryptoView(APIView):
         user_id = user.id
         all_data = {}
         crypto_datas = Crypto.objects.filter(user_id=user_id).values_list('name', 'amount')
+        crypto_to_remove = Crypto.objects.filter(user_id=user_id, amount=0)
+        if crypto_to_remove:
+            for crypto in crypto_to_remove:
+                Crypto.objects.filter(user_id=user_id, name=crypto.name).delete()
         try:
             all_data.update(crypto_datas)
             return JsonResponse({"cryptos": all_data}, status=200)

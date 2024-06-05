@@ -9,6 +9,7 @@ const BuyCryptoComponent = () => {
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(true);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [error, setError] = useState("");
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -22,11 +23,13 @@ const BuyCryptoComponent = () => {
         amount,
       });
       console.log(response.data);
+      router.push("/all_crypto?success=true");
     } catch (error) {
-      console.error("Error selling crypto:", error);
+      setError(
+        "Error buying crypto, check the amount you want to buy and try again."
+      );
     } finally {
       setLoading(false);
-      router.push("/all_crypto");
     }
   };
 
@@ -48,7 +51,7 @@ const BuyCryptoComponent = () => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       router.push("/all_crypto");
-    }, 20000); // 20 seconds
+    }, 40000); // 40 seconds
     return () => clearTimeout(timeout);
   }, [router]);
 
@@ -56,21 +59,28 @@ const BuyCryptoComponent = () => {
     <Loading />
   ) : (
     <ProtectedRoute>
-      <div>
-        <h1>{name}</h1>
-        <p>{price}</p>
-        <form onSubmit={handleSubmit}>
-          <label>
-            Amount:
-            <input
-              type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-            />
-          </label>
-          <button type="submit">Buy</button>
-          <p>Total Price: {totalPrice.toFixed(2)}</p>
-        </form>
+      <div className="container-fluid">
+        <div className="profile-wrapper">
+          <form onSubmit={handleSubmit} className="form-container">
+            {error && <div className="alert alert-danger">{error}</div>}
+            <h1>{name}</h1>
+            <p>
+              Price of {name}: {price}
+            </p>
+            <label>
+              Amount:
+              <input
+                type="number"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+              />
+            </label>
+            <p>Total Price: {totalPrice.toFixed(2)}</p>
+            <button type="submit" className="btn btn-dark mt-3">
+              Buy
+            </button>
+          </form>
+        </div>
       </div>
     </ProtectedRoute>
   );

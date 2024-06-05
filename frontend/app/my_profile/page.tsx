@@ -4,6 +4,7 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import Loading from "../components/loading/loading";
 import api from "../api";
 import { useRouter } from "next/navigation";
+import Navbar from "../components/Navbar";
 
 interface UserData {
   username: string;
@@ -30,7 +31,6 @@ const MyProfile = () => {
         setData(response.data);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching data:", error);
         setLoading(false);
       }
     };
@@ -42,11 +42,20 @@ const MyProfile = () => {
     <Loading />
   ) : (
     <ProtectedRoute>
-      <div>
-        <h1>{data?.username}</h1>
-        <p>{data?.email}</p>
-        <p>Credits: {data?.credits}</p>
-        <button onClick={logout}>Log out</button>
+      <Navbar />
+      <div className="container-fluid">
+        <div className="profile-wrapper">
+          <h1 className="welcome-text">Welcome, {data?.username}!</h1>
+          <form className="form-container">
+            <p>{data?.email}</p>
+            <p>Credits: {data?.credits}</p>
+            <button onClick={logout} className="btn btn-dark w-100">
+              Log out
+            </button>
+          </form>
+          <h2 className="text-profile">Ready to learn new things?</h2>
+          <button className="btn btn-dark ">Start Buying Crypto</button>
+        </div>
       </div>
     </ProtectedRoute>
   );
