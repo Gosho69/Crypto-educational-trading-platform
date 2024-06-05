@@ -22,7 +22,7 @@ export default function Form({ route }: { route: string }) {
     }
     try {
       const res = await api.post(route, { username, email, password });
-      router.push("/login");
+      router.push("/login?success=true");
     } catch (error) {
       setError(
         "There is an existing user with this email or username. Please try again."

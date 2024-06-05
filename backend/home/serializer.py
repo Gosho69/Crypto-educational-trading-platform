@@ -40,5 +40,5 @@ class CryptoSerializer(serializers.ModelSerializer):
     )
     class Meta:
         model = Crypto
-        fields = ['name', 'amount', 'user_id']
+        fields = ['name', 'amount', 'user']
         extra_kwargs = {"user_id": {"read_only": True}}

@@ -7,7 +7,7 @@ import Navbar from "../components/Navbar";
 
 interface CryptoData {
   name: string;
-  amount: number;
+  amount: string;
 }
 
 async function getData(): Promise<CryptoData[]> {
@@ -16,8 +16,7 @@ async function getData(): Promise<CryptoData[]> {
     const cryptoData: CryptoData[] = Object.entries(response.data.cryptos).map(
       ([name, amount]) => ({
         name,
-        amount:
-          typeof amount === "number" ? amount : parseFloat(amount as string),
+        amount: amount as string,
       })
     );
     return cryptoData;

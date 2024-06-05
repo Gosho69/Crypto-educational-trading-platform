@@ -24,7 +24,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
 class Crypto(models.Model):
     name = models.CharField(_("name"), max_length=100)
-    amount = models.FloatField(_("amount"))
+    amount = models.DecimalField(_("amount"), max_digits=20, decimal_places=2)
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name="cryptos")
 
     def __str__(self):

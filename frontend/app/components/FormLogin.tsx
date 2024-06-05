@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Loading from "./loading/loading";
 
 export default function Form({ route }: { route: string }) {
@@ -9,6 +9,9 @@ export default function Form({ route }: { route: string }) {
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState(false);
+  const searchParams = useSearchParams();
+  const success = searchParams.get("success");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -26,11 +29,27 @@ export default function Form({ route }: { route: string }) {
     }
   };
 
+  useEffect(() => {
+    if (success) {
+      setSuccessMessage(true);
+      const timer = setTimeout(() => {
+        setSuccessMessage(false);
+        router.replace("/login", undefined);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [success, router]);
+
   return loading ? (
     <Loading />
   ) : (
     <div className="form-wrapper">
       <form onSubmit={handleSubmit} className="form-container">
+        {successMessage && (
+          <div className="alert alert-success">
+            Created account successfully! Now you can login!
+          </div>
+        )}
         {error && <div className="alert alert-danger">{error}</div>}
         <h1 className="label1">Login</h1>
         <div className="mb-3">
