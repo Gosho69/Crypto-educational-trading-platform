@@ -17,11 +17,12 @@ const MyProfile = () => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  const logout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    localStorage.clear();
+  const logout = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     router.push("/");
+    setTimeout(() => {
+      localStorage.clear();
+    }, 2000);
   };
 
   useEffect(() => {
@@ -31,6 +32,7 @@ const MyProfile = () => {
         setData(response.data);
         setLoading(false);
       } catch (error) {
+      } finally {
         setLoading(false);
       }
     };

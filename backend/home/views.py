@@ -1,5 +1,3 @@
-from django.shortcuts import render
-from django.views import View
 from rest_framework import generics
 from .models import MyUser, Crypto
 from .serializer import UserSerializer, CryptoSerializer
@@ -7,13 +5,9 @@ from rest_framework.permissions import AllowAny, AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializer import CustomTokenObtainPairSerializer
 from django.http import JsonResponse
-from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from .functions.getcrypto import get_crypto_info, get_crypto_price
 from .functions.getjsonresponse import getJsonResponseFuncName
-import json
-from django.core.exceptions import ValidationError
-from django.db import IntegrityError
 
 cryptonames = ['bitcoin', 'ethereum', 'litecoin', 'eos', 'cardano', 'stellar', 'iota', 'tron', 'neo', 'solana']
 
@@ -33,7 +27,7 @@ class DashboardMyProfileView(APIView):
             'username': user.username,
             'email': user.email,
             'credits': user.credits
-        })
+        }, status=200)
 
 class DashboardAllCryptoView(APIView):
     permission_classes = [AllowAny]
