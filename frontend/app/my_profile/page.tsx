@@ -19,9 +19,10 @@ const MyProfile = () => {
 
   const logout = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-  const logout = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
     router.push("/");
+    setTimeout(() => {
+      localStorage.clear();
+    }, 2000);
   };
 
   useEffect(() => {
